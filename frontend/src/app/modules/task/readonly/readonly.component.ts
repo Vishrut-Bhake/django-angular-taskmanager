@@ -69,13 +69,13 @@ export class ReadonlyComponent implements OnInit {
 
     if (filters.task_name) {
       filteredTasks = filteredTasks.filter(task =>
-        task.task_name.toLowerCase().includes(filters.task_name.toLowerCase())
+        task.task_name.toLowerCase().includes(filters.task_name)
       );
     }
 
     if (filters.task_description) {
       filteredTasks = filteredTasks.filter(task =>
-        task.task_description.toLowerCase().includes(filters.task_description.toLowerCase())
+        task.task_description.toLowerCase().includes(filters.task_description)
       );
     }
 
@@ -92,7 +92,7 @@ export class ReadonlyComponent implements OnInit {
 
     // Apply Task Status Checkbox Filter
     if (this.selectedStatuses.length > 0) {
-      filteredTasks = filteredTasks.filter(task => this.selectedStatuses.includes(task.task_status));
+      filteredTasks = filteredTasks.filter(task => this.selectedStatuses.includes(task.task_status));      
     }
 
     this.dataSource.data = filteredTasks;
@@ -176,4 +176,4 @@ export class ReadonlyComponent implements OnInit {
       })
       .catch(error => alert(error.message));
   }
-}
+}  

@@ -59,11 +59,10 @@ export class EdittaskComponent implements OnInit {
   // ✅ Submit updated task data
   updateTask() {
     if (this.editTaskForm.invalid) return;
-
     const formData = new FormData();
     formData.append('task_name', this.editTaskForm.get('task_name')?.value);
     formData.append('task_description', this.editTaskForm.get('task_description')?.value);
-    formData.append('task_status', this.editTaskForm.get('task_status')?.value.toLowerCase());
+    formData.append('task_status', this.editTaskForm.get('task_status')?.value);
     formData.append('task_priority', this.editTaskForm.get('task_priority')?.value);
     
     if (this.selectedFile) {

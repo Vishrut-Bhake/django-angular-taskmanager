@@ -5,7 +5,7 @@ class Task(models.Model):
     task_description = models.TextField()
     task_status = models.CharField(
         max_length=25,
-        choices=(('open', 'Open'),('in_progress', 'In Progress'),('completed', 'Completed'),),default='open')
+        choices=(('Open', 'Open'),('In Progress', 'In Progress'),('Completed', 'Completed'),),default='open')
     
     task_priority = models.IntegerField()
     task_file = models.FileField(upload_to='task_files/', null=True, blank=True)

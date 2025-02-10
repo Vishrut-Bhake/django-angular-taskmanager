@@ -21,6 +21,9 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}login/`, credentials).pipe(
       tap((response: any) => {
         if (response.access) {
+          sessionStorage.setItem('access', response.access);
+          sessionStorage.setItem('refresh', response.refresh);
+          sessionStorage.setItem('role', response.role || 'viewer');
         } else {
           console.error("No access token received!");
         }

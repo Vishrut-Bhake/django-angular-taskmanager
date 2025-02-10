@@ -16,7 +16,6 @@ export class HomeComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    debugger
     // Get the username and role from session storage
     this.userName = sessionStorage.getItem('userName') || 'Guest';
     this.userRole = this.authService.getUserRole(); // Fetch role from AuthService
