@@ -19,6 +19,11 @@ export class TaskService {
     return this.http.get<Task[]>(this.apiUrl);
   }
 
+  // Fetch tasks with pagination
+  getTasks(url?: string): Observable<any> {
+    return this.http.get<Task[]>(url || this.apiUrl);
+  }
+  
   createTask(task: FormData): Observable<Task> {
     return this.http.post<Task>(this.apiUrl, task);
   }

@@ -1,121 +1,79 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { TaskService } from '../../../../services/task.service';
-import { MatDialog } from '@angular/material/dialog';
-import { EdittaskComponent } from '../edittask/edittask.component';
-import { ToastrService } from 'ngx-toastr';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
+import { EdittaskComponent } from '../edittask/edittask.component';
 
 @Component({
   selector: 'app-viewtask',
   templateUrl: './viewtask.component.html',
   styleUrls: ['./viewtask.component.css'],
-  standalone: false
+  standalone: false,
 })
 export class ViewtaskComponent implements OnInit {
-  tasks: any[] = [];
-  displayedColumns: string[] = ['id', 'task_name', 'task_description', 'task_status', 'task_priority', 'actions'];
+  filterForm!: FormGroup;
   dataSource = new MatTableDataSource<any>();
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
-  filterForm!: FormGroup | any;
-
-  //Task Status Options for Checkbox Filtering
-  taskStatusOptions = ['Open', 'In Progress', 'Completed'];
+  displayedColumns: string[] = ['id', 'task_name', 'task_description', 'task_status', 'task_priority', 'actions'];
+  taskStatusOptions: string[] = ['Open', 'In Progress', 'Completed'];
   selectedStatuses: string[] = [];
+  
+  totalRecords = 0;
+  pageSize = 5;
+  currentPage = 0;
+  filterText: string = '';
+  filteredTasks: any[] = [];
+  tasks: any[] = [];
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
-    private taskService: TaskService,
     private dialog: MatDialog,
     private toastr: ToastrService,
-    private fb: FormBuilder
-  ) {}
-
-  ngOnInit() {
+    private fb: FormBuilder,
+    private http: HttpClient
+  ) {
     this.filterForm = this.fb.group({
       task_name: [''],
       task_description: [''],
-      date_range: this.fb.group({ 
-        start: [null],
-        end: [null]
+      date_range: this.fb.group({
+        start: [''],
+        end: ['']
       })
-    }); 
-
-    this.getAllTasks();
-  }
-
-  getAllTasks() {
-    this.taskService.getAllTasks().subscribe({
-      next: (data) => {
-        this.tasks = data;
-        this.dataSource = new MatTableDataSource(this.tasks);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      },
-      error: (err) => console.error('Error fetching tasks', err)
     });
   }
 
-  // Apply Filters including Checkbox Status Filter
+  ngOnInit() {
+    this.fetchTasks();
+  }
+  
   applyFilters() {
-    const filters = this.filterForm.value;
-    let filteredTasks = [...this.tasks];
-    this.taskService.generatePdf(filters);
-
-    if (filters.task_name) {
-      filteredTasks = filteredTasks.filter(task =>
-        task.task_name.toLowerCase().includes(filters.task_name)
-      );
-    }
-
-    if (filters.task_description) {
-      filteredTasks = filteredTasks.filter(task =>
-        task.task_description.toLowerCase().includes(filters.task_description)
-      );
-    }
-
-     // Date Range Filtering
-     if (filters.date_range && filters.date_range.start && filters.date_range.end) {
-      const fromDate = new Date(filters.date_range.start).getTime();
-      const toDate = new Date(filters.date_range.end).getTime();
-      filteredTasks = filteredTasks.filter(task => {
-        const taskDate = new Date(task.created_at).getTime();
-        return taskDate >= fromDate && taskDate <= toDate;
-      });
-      
-    }
-
-    // Apply Task Status Checkbox Filter
-    if (this.selectedStatuses.length > 0) {
-      filteredTasks = filteredTasks.filter(task => this.selectedStatuses.includes(task.task_status));      
-    }
-
-    this.dataSource.data = filteredTasks;
+    this.currentPage = 0;
+    this.fetchTasks();
   }
 
-  // Reset Filters
   resetFilters() {
     this.filterForm.reset();
     this.selectedStatuses = [];
-    this.getAllTasks();
+    this.applyFilters();
   }
 
-  // Toggle Checkbox Selection
   toggleStatusFilter(status: string) {
-    const index = this.selectedStatuses.indexOf(status);
-    if (index === -1) {
-      this.selectedStatuses.push(status);
+    if (this.selectedStatuses.includes(status)) {
+      this.selectedStatuses = this.selectedStatuses.filter(s => s !== status);
     } else {
-      this.selectedStatuses.splice(index, 1);
+      this.selectedStatuses.push(status);
     }
     this.applyFilters();
   }
 
-  // Open Edit Task Dialog
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.fetchTasks();
+  }
+
   editTask(taskId: number) {
     const dialogRef = this.dialog.open(EdittaskComponent, {
       width: '400px',
@@ -124,45 +82,43 @@ export class ViewtaskComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.getAllTasks();
+        this.fetchTasks();
       }
     });
   }
 
   deleteTask(taskId: number) {
     if (confirm('Are you sure you want to delete this task?')) {
-      this.taskService.deleteTask(taskId).subscribe(() => {
-        this.tasks = this.tasks.filter(task => task.id !== taskId);
-        this.dataSource.data = this.tasks;
-        this.toastr.success('Task Deleted successfully', '', { timeOut: 2000 });
+      this.http.delete(`http://127.0.0.1:8000/api/tasks/${taskId}/`).subscribe(() => {
+        this.toastr.success('Task Deleted Successfully', '', { timeOut: 2000 });
+        this.fetchTasks();
       });
     }
   }
 
   downloadPDF() {
-    const params: any = new URLSearchParams();
+    let params = new HttpParams();
     if (this.filterForm.value.task_name) {
-      params.append('task_name', this.filterForm.value.task_name);
+      params = params.set('task_name', this.filterForm.value.task_name);
     }
     if (this.selectedStatuses.length > 0) {
-     this.selectedStatuses.forEach(status => params.append('task_status', status));
+      params = params.set('task_status', this.selectedStatuses.join(','));
     }
-    if (this.filterForm.value.date_range?.start && this.filterForm.value.date_range?.end) {
-      params.append('from_date', this.filterForm.value.date_range.start.toISOString().split('T')[0]);
-      params.append('to_date', this.filterForm.value.date_range.end.toISOString().split('T')[0]);
+    if (this.filterForm.value.date_range?.start) {
+      params = params.set('from_date', this.filterForm.value.date_range.start);
     }
-    if (!params.toString()) {
+    if (this.filterForm.value.date_range?.end) {
+      params = params.set('to_date', this.filterForm.value.date_range.end);
+    }
+
+    if (!params.keys().length) {
       this.toastr.warning('Please select at least one filter before downloading the report.');
       return;
     }
-    const pdfUrl = `http://localhost:8000/api/tasks/generate-pdf/?${params.toString()}`;
+
+    const pdfUrl = `http://127.0.0.1:8000/api/tasks/generate-pdf/?${params.toString()}`;
     fetch(pdfUrl)
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(err => { throw new Error(err.error); });
-        }
-        return response.blob();
-      })
+      .then(response => response.blob())
       .then(blob => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -173,6 +129,48 @@ export class ViewtaskComponent implements OnInit {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
       })
-      .catch(error => alert(error.message));
+      .catch(error => this.toastr.error('Error downloading PDF'));
   }
-}  
+
+  applySearchFilter(): void {
+    const searchValue = this.filterText.toLowerCase().trim();
+    if (!searchValue) {
+      this.dataSource.data = this.tasks; // Reset to original data
+      return;
+    }
+    this.dataSource.data = this.tasks.filter(task =>
+      task.task_name.toLowerCase().includes(searchValue) ||
+      task.task_description.toLowerCase().includes(searchValue) ||
+      task.task_status.toLowerCase().includes(searchValue)
+    );
+  }
+
+  fetchTasks() {
+    let params = new HttpParams()
+      .set('page', (this.currentPage + 1).toString())
+      .set('page_size', this.pageSize.toString());
+  
+    if (this.filterForm.value.task_name) {
+      params = params.set('task_name', this.filterForm.value.task_name);
+    }
+    if (this.filterForm.value.task_description) {
+      params = params.set('task_description', this.filterForm.value.task_description);
+    }
+    if (this.filterForm.value.date_range?.start) {
+      params = params.set('start_date', this.filterForm.value.date_range.start);
+    }
+    if (this.filterForm.value.date_range?.end) {
+      params = params.set('end_date', this.filterForm.value.date_range.end);
+    }
+    if (this.selectedStatuses.length > 0) {
+      params = params.set('task_status', this.selectedStatuses.join(','));
+    }
+  
+    this.http.get<any>('http://127.0.0.1:8000/api/tasks/', { params }).subscribe((response) => {
+      this.tasks = response.results;  // Store all fetched tasks
+      this.dataSource.data = this.tasks;
+      this.totalRecords = response.count;
+    });
+  }
+  
+}
