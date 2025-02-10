@@ -115,8 +115,8 @@ class ResetPasswordView(APIView):
             except User.DoesNotExist:
                 return Response({"detail": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
 
-            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))  # force_bytes ensures correct encoding
-            token = default_token_generator.make_token(user)  # Generates a valid reset token
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))  
+            token = default_token_generator.make_token(user)
 
             reset_url = f"http://127.0.0.1:4200/reset-password/{uidb64}/{token}/"
             send_mail(

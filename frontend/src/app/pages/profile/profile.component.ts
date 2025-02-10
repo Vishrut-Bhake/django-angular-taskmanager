@@ -43,8 +43,8 @@ export class ProfileComponent implements OnInit {
 
     this.profileService.updateProfile(this.profileForm.value).subscribe({
       next: (res) => {
-        localStorage.setItem('userDeatils', JSON.stringify(this.profileForm.value)); // Update local storage
-        sessionStorage.setItem('userName', this.profileForm.value.user_name); // Update session storage
+        localStorage.setItem('userDeatils', JSON.stringify(this.profileForm.value)); 
+        sessionStorage.setItem('userName', this.profileForm.value.user_name);
         this.toastr.success(res.message, '', { timeOut: 2000 });
         this.router.navigate(['/home']);
       },

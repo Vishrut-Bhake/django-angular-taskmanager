@@ -3,8 +3,6 @@ from django.db import models
 class Task(models.Model):
     task_name = models.CharField(max_length=255)
     task_description = models.TextField()
-    
-    # Directly use a tuple for the status choices
     task_status = models.CharField(
         max_length=25,
         choices=(('open', 'Open'),('in_progress', 'In Progress'),('completed', 'Completed'),),default='open')

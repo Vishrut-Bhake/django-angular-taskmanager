@@ -170,7 +170,7 @@ REST_FRAMEWORK = {
 
 # CORS Settings (Allow Angular frontend)
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",  # Angular development server
+    "http://localhost:4200",
 ]
 CORS_ALLOW_CREDENTIALS = True
 # Security Settings

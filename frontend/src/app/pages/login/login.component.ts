@@ -10,7 +10,7 @@ import { ForgotPasswordService } from '../../../services/forgot-password.service
   selector: 'app-login',
   standalone: false,
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'] // Fixed property name
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   isRegistering = false; // Tracks whether to show the registration or login form
@@ -30,7 +30,7 @@ export class LoginComponent {
   passwordContainsSpecialChar = false;
 
   constructor(
-    private formBuilder: FormBuilder, // Fixed typo (was formBulder)
+    private formBuilder: FormBuilder, 
     private router: Router,
     private toastr: ToastrService,
     private passwordService: ForgotPasswordService,
@@ -140,10 +140,6 @@ export class LoginComponent {
 
   // Register new user
   onRegister() {
-    // if (this.signupForm.invalid) {
-    //   return;
-    // }
-
     const userInfo = this.signupForm.value;
     this.authService.register(userInfo).subscribe(
       () => {

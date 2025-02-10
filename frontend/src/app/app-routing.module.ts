@@ -37,8 +37,8 @@ const routes: Routes = [
   { path: 'viewer-dashboard', component: ViewerdashboardComponent, canActivate: [RoleGuard] },
   { path: 'tasks', component: TaskComponent },
   { path: 'realony', component: ReadonlyComponent },
-  { path: 'profile', component: ProfileComponent },  // ✅ Profile Update Page
-  { path: 'change-password', component: ChangePasswordComponent },  // ✅ Change Password Page
+  { path: 'profile', component: ProfileComponent },  
+  { path: 'change-password', component: ChangePasswordComponent }, 
   { path: '**', redirectTo: 'login' }
 ];
 
