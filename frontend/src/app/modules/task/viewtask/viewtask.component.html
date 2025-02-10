@@ -1,0 +1,97 @@
+<h3>Task List</h3>
+
+<!-- Filters Section -->
+<div class="filter-container">
+  <span class="pt-2">Filter BY</span>
+  <form [formGroup]="filterForm">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Task Name</mat-label>
+      <input matInput formControlName="task_name">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Task Description</mat-label>
+      <input matInput formControlName="task_description">
+    </mat-form-field>
+
+    <!-- ✅ Date Range Picker -->
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Task Date Range</mat-label>
+      <mat-date-range-input [rangePicker]="picker" formGroupName="date_range">
+        <input matStartDate formControlName="start" placeholder="Start date">
+        <input matEndDate formControlName="end" placeholder="End date">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+
+ 
+    <!-- Task Status Filter (Checkboxes) -->
+    <div class="status-filter">
+      <label>Task Status:</label>
+      <mat-checkbox *ngFor="let status of taskStatusOptions" (change)="toggleStatusFilter(status)"
+        [checked]="selectedStatuses.includes(status)">
+        {{ status }}
+      </mat-checkbox>
+    </div>
+
+   <div class="download" >
+      <button mat-raised-button color="primary" (click)="downloadPDF()">
+        Download PDF
+      </button>
+    </div>
+
+    <!-- Task Priority Filter (Radio Buttons) -->
+    <button mat-button color="primary" (click)="applyFilters()">Apply Filters</button>
+    <button mat-button color="warn" (click)="resetFilters()">Reset</button>
+  </form>
+
+
+</div>
+
+<!-- Task Table -->
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" *ngIf="tasks.length > 0">
+
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+    <td mat-cell *matCellDef="let task"> {{ task.id }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="task_name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+    <td mat-cell *matCellDef="let task"> {{ task.task_name }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="task_description">
+    <th mat-header-cell *matHeaderCellDef> Description </th>
+    <td mat-cell *matCellDef="let task"> {{ task.task_description }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="task_status">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+    <td mat-cell *matCellDef="let task"> {{ task.task_status }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="task_priority">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Priority </th>
+    <td mat-cell *matCellDef="let task"> {{ task.task_priority }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> Actions </th>
+    <td mat-cell *matCellDef="let task">
+      <button mat-icon-button color="primary" (click)="editTask(task.id)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="deleteTask(task.id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>

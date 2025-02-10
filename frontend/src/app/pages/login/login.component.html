@@ -1,0 +1,91 @@
+<div class="top-div">
+  <div class="container" [class.active]="isRegistering">
+
+      <!-- Login Form -->
+      <div class="form-box login" *ngIf="!isRegistering && !showForgotPasswordForm">
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+              <h1>Login</h1>
+
+              <div class="input-box">
+                  <input type="email" placeholder="Email" formControlName="email" required />
+                  <i class='bx bxs-user'></i>
+              </div>
+
+              <div class="input-box">
+                  <input [type]="showPassword ? 'text' : 'password'" placeholder="Password" formControlName="password" required />
+                  <i class='bx bxs-lock-alt'></i>
+                  <i class="bx" [ngClass]="showPassword ? 'bxs-hide' : 'bxs-show'" (click)="togglePassword('login')"></i>
+              </div>
+
+              <div class="forgot-link">
+                  <a (click)="onForgotPassword()">Forgot Password?</a>
+              </div>
+
+              <button type="submit" class="btn" [disabled]="loginForm.invalid">Login</button>
+          </form>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div class="form-box forgot-password" *ngIf="showForgotPasswordForm">
+          <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSubmitForgotPassword()">
+              <h1>Forgot Password</h1>
+
+              <div class="input-box">
+                  <input type="email" placeholder="Enter your email" formControlName="email" required />
+                  <i class='bx bxs-envelope'></i>
+              </div>
+
+              <button type="submit" class="btn" [disabled]="forgotPasswordForm.invalid">Reset Password</button>
+              <p class="back-link" (click)="showForgotPasswordForm = false">Back to Login</p>
+          </form>
+      </div>
+
+      <!-- Registration Form -->
+      <div class="form-box register" *ngIf="isRegistering">
+          <form [formGroup]="signupForm" (ngSubmit)="onRegister()">
+              <h1>Registration</h1>
+
+              <div class="input-box">
+                  <input type="text" placeholder="Username" formControlName="username" required />
+                  <i class='bx bxs-user'></i>
+              </div>
+
+              <div class="input-box">
+                  <input type="email" placeholder="Email" formControlName="email" required />
+                  <i class='bx bxs-envelope'></i>
+              </div>
+
+              <div class="input-box">
+                  <input [type]="showSignupPassword ? 'text' : 'password'" placeholder="Password" formControlName="password" required />
+                  <i class='bx bxs-lock-alt'></i>
+                  <i class="bx" [ngClass]="showSignupPassword ? 'bxs-hide' : 'bxs-show'" (click)="togglePassword('signup')"></i>
+              </div>
+
+              <!-- Password Validation Messages -->
+              <div class="password-validation">
+                  <p [class.valid]="passwordContainsUppercase">✔ Must contain an uppercase letter</p>
+                  <p [class.valid]="passwordContainsLowercase">✔ Must contain a lowercase letter</p>
+                  <p [class.valid]="passwordContainsNumber">✔ Must contain a number</p>
+                  <p [class.valid]="passwordContainsSpecialChar">✔ Must contain a special character(&#64;$!%*?&)</p>
+              </div>
+
+              <button type="submit" class="btn">Register</button>
+          </form>
+      </div>
+
+      <!-- Toggle Panel -->
+      <div class="toggle-box">
+          <div class="toggle-panel toggle-left">
+              <h1>Hello, Welcome!</h1>
+              <p>Don't have an account?</p>
+              <button class="btn register-btn" (click)="toggleForm()">Register</button>
+          </div>
+
+          <div class="toggle-panel toggle-right">
+              <h1>Welcome Back!</h1>
+              <p>Already have an account?</p>
+              <button class="btn login-btn" (click)="toggleForm()">Login</button>
+          </div>
+      </div>
+  </div>
+</div>

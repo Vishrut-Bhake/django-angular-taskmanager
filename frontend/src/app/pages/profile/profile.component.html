@@ -1,0 +1,33 @@
+<div class="container">
+  <h2>Update Profile</h2>
+  <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+    
+    <label>User Name:</label>
+    <input type="text" formControlName="user_name" />
+    <div *ngIf="profileForm.controls['user_name'].touched && profileForm.controls['user_name'].invalid" class="error">
+      <span *ngIf="profileForm.controls['user_name'].errors?.['required']">User Name is required.</span>
+      <span *ngIf="profileForm.controls['user_name'].errors?.['minlength']">Minimum 3 characters required.</span>
+    </div>
+
+    <label>First Name:</label>
+    <input type="text" formControlName="first_name" />
+    <div *ngIf="profileForm.controls['first_name'].touched && profileForm.controls['first_name'].invalid" class="error">
+      <span *ngIf="profileForm.controls['first_name'].errors?.['required']">First Name is required.</span>
+    </div>
+
+    <label>Last Name:</label>
+    <input type="text" formControlName="last_name" />
+    <div *ngIf="profileForm.controls['last_name'].touched && profileForm.controls['last_name'].invalid" class="error">
+      <span *ngIf="profileForm.controls['last_name'].errors?.['required']">Last Name is required.</span>
+    </div>
+
+    <label>Email:</label>
+    <input type="email" formControlName="email" />
+    <div *ngIf="profileForm.controls['email'].touched && profileForm.controls['email'].invalid" class="error">
+      <span *ngIf="profileForm.controls['email'].errors?.['required']">Email is required.</span>
+      <span *ngIf="profileForm.controls['email'].errors?.['email']">Enter a valid email.</span>
+    </div>
+
+    <button type="submit" [disabled]="profileForm.invalid">Update Profile</button>
+  </form>
+</div>

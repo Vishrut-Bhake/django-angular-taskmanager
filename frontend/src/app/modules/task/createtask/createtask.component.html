@@ -1,0 +1,44 @@
+<mat-card class="p-3">
+  <h3>Create Task</h3>
+  <form (submit)="createTask()" enctype="multipart/form-data">
+
+    <!-- Task Name -->
+    <mat-form-field class="w-100">
+      <mat-label>Task Name</mat-label>
+      <input matInput [(ngModel)]="newTask.task_name" name="task_name" required>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field class="w-100">
+      <mat-label>Description</mat-label>
+      <textarea matInput [(ngModel)]="newTask.task_description" name="task_description" required></textarea>
+    </mat-form-field>
+
+    <!-- Status -->
+    <mat-form-field class="w-100">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="newTask.task_status" name="task_status">
+        <mat-option value="Open">Open</mat-option>
+        <mat-option value="In Progress">In Progress</mat-option>
+        <mat-option value="Completed">Completed</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Priority -->
+    <mat-form-field class="w-100">
+      <mat-label>Priority</mat-label>
+      <input matInput type="number" [(ngModel)]="newTask.task_priority" name="task_priority" min="1" max="100" required>
+    </mat-form-field>
+
+
+    <!-- File Upload (Outside mat-form-field) -->
+    <div class="file-upload-container">
+      <label>Upload File (Image/PDF):</label>
+      <input type="file" (change)="onFileSelected($event)">
+      <p *ngIf="selectedFile">{{ selectedFile.name }}</p>
+    </div>
+
+    <!-- Submit Button -->
+    <button mat-raised-button color="primary" type="submit" class="mt-2">Create Task</button>
+  </form>
+</mat-card>
