@@ -6,8 +6,7 @@
     <mat-form-field appearance="outline" class="search-box">
       <mat-label>Search Tasks</mat-label>
       <mat-icon matPrefix>search</mat-icon>
-      <input matInput [(ngModel)]="filterText" formControlName="task_description" 
-        placeholder="Search by Name, Description" (input)="applySearchFilter()">
+      <input matInput formControlName="searchQuery" placeholder="Search by Name, Description">
     </mat-form-field>
 
     <!-- Date Range Picker -->
@@ -21,25 +20,32 @@
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
 
-    <!-- Task Status Filter (Dropdown) -->
-    <mat-form-field appearance="outline" class="filter-field">
-      <mat-label>Task Status</mat-label>
-      <mat-select [(value)]="selectedStatuses" (selectionChange)="applyFilters()" multiple>
-        <mat-option *ngFor="let status of taskStatusOptions" [value]="status">
-          {{ status }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <div class="download">
-      <button mat-raised-button color="primary" (click)="downloadPDF()">
-        Download PDF
-      </button>
-    </div>
-
     <button mat-button color="primary" (click)="applyFilters()">Apply Filters</button>
     <button mat-button color="warn" (click)="resetFilters()">Reset</button>
+    <button mat-raised-button color="primary" (click)="downloadPDF()"> Download PDF  </button>
   </form>
+</div>
+
+<div>
+      <!-- Task Status Filter (Dropdown) -->
+      <mat-form-field appearance="outline">
+        <mat-label>Task Status</mat-label>
+        <mat-select #select multiple [(ngModel)]="selectedStatuses" (selectionChange)="optionClick()">
+          
+          <!-- "Select All" Checkbox -->
+          <div class="select-all">
+            <mat-checkbox [(ngModel)]="allSelected" [ngModelOptions]="{standalone: true}" 
+              (change)="toggleAllSelection()">Select All</mat-checkbox>
+          </div>
+      
+          <!-- Individual Status Options -->
+          <mat-option *ngFor="let status of taskStatusOptions" [value]="status">
+            {{ status }}
+          </mat-option>
+      
+        </mat-select>
+      </mat-form-field>
+  
 </div>
 
 <!-- Task Table with Pagination -->
@@ -85,7 +91,13 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
-<!-- ✅ MatPaginator Connected to Table -->
-<mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" 
-  (page)="onPageChange($event)" showFirstLastButtons>
+
+
+<!-- MatPaginator Connected to Table -->
+<mat-paginator
+  [length]="totalRecords"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 20]"
+  (page)="onPageChange($event)"
+  showFirstLastButtons>
 </mat-paginator>

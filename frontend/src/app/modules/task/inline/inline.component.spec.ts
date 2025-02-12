@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DeletettaskComponent } from './deletettask.component';
+import { InlineComponent } from './inline.component';
 
-describe('DeletettaskComponent', () => {
-  let component: DeletettaskComponent;
-  let fixture: ComponentFixture<DeletettaskComponent>;
+describe('InlineComponent', () => {
+  let component: InlineComponent;
+  let fixture: ComponentFixture<InlineComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DeletettaskComponent]
+      declarations: [InlineComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DeletettaskComponent);
+    fixture = TestBed.createComponent(InlineComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

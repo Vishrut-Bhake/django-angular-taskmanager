@@ -2,19 +2,14 @@
 
 <!-- Filters Section -->
 <div class="filter-container">
-  <span class="pt-2">Filter BY</span>
   <form [formGroup]="filterForm">
-    <mat-form-field appearance="outline" class="filter-field">
-      <mat-label>Task Name</mat-label>
-      <input matInput formControlName="task_name">
+    <mat-form-field appearance="outline" class="search-box">
+      <mat-label>Search Tasks</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput formControlName="searchQuery" placeholder="Search by Name, Description">
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="filter-field">
-      <mat-label>Task Description</mat-label>
-      <input matInput formControlName="task_description">
-    </mat-form-field>
-
-    <!-- ✅ Date Range Picker -->
+    <!-- Date Range Picker -->
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Task Date Range</mat-label>
       <mat-date-range-input [rangePicker]="picker" formGroupName="date_range">
@@ -25,33 +20,36 @@
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
 
- 
-    <!-- Task Status Filter (Checkboxes) -->
-    <div class="status-filter">
-      <label>Task Status:</label>
-      <mat-checkbox *ngFor="let status of taskStatusOptions" (change)="toggleStatusFilter(status)"
-        [checked]="selectedStatuses.includes(status)">
-        {{ status }}
-      </mat-checkbox>
-    </div>
-
-   <div class="download" >
-      <button mat-raised-button color="primary" (click)="downloadPDF()">
-        Download PDF
-      </button>
-    </div>
-
-    <!-- Task Priority Filter (Radio Buttons) -->
     <button mat-button color="primary" (click)="applyFilters()">Apply Filters</button>
     <button mat-button color="warn" (click)="resetFilters()">Reset</button>
+    <button mat-raised-button color="primary" (click)="downloadPDF()"> Download PDF  </button>
   </form>
-
-
 </div>
 
-<!-- Task Table -->
-<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" *ngIf="tasks.length > 0">
+<div>
+      <!-- Task Status Filter (Dropdown) -->
+      <mat-form-field appearance="outline">
+        <mat-label>Task Status</mat-label>
+        <mat-select #select multiple [(ngModel)]="selectedStatuses" (selectionChange)="optionClick()">
+          
+          <!-- "Select All" Checkbox -->
+          <div class="select-all">
+            <mat-checkbox [(ngModel)]="allSelected" [ngModelOptions]="{standalone: true}" 
+              (change)="toggleAllSelection()">Select All</mat-checkbox>
+          </div>
+      
+          <!-- Individual Status Options -->
+          <mat-option *ngFor="let status of taskStatusOptions" [value]="status">
+            {{ status }}
+          </mat-option>
+      
+        </mat-select>
+      </mat-form-field>
+  
+</div>
 
+<!-- Task Table with Pagination -->
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" *ngIf="dataSource.data.length > 0">
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
     <td mat-cell *matCellDef="let task"> {{ task.id }} </td>
@@ -79,7 +77,15 @@
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
 </table>
 
-<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+
+<!-- MatPaginator Connected to Table -->
+<mat-paginator
+  [length]="totalRecords"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 20]"
+  (page)="onPageChange($event)"
+  showFirstLastButtons>
+</mat-paginator>

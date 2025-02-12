@@ -1,0 +1,68 @@
+.filter-field{
+    margin-left: 1.5rem;
+  }
+  
+  /* viewtask.component.css */
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .mat-table {
+    min-width: 600px;
+  }
+  
+  .mat-header-cell {
+    font-weight: bold;
+  }
+  
+  .editable-cell {
+    cursor: pointer;
+    padding: 8px;
+  }
+  
+  input.edit-input {
+    width: 100%;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button.edit {
+    background-color: #fbc02d;
+    color: white;
+  }
+  
+  button.save {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  button.cancel {
+    background-color: #e57373;
+    color: white;
+  }
+  
+  button.delete {
+    background-color: #d32f2f;
+    color: white;
+  }
+  
+  
+  ::ng-deep .cdk-overlay-connected-position-bounding-box{
+    width:144.1375px !important;
+      top: 416.2px;
+      left: 1009.7px;
+  }

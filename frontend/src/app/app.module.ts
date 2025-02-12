@@ -15,7 +15,6 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { TaskComponent } from './modules/task/task.component';
 import { FormsModule } from '@angular/forms';
-import { ViewerdashboardComponent } from './modules/viewerdashboard/viewerdashboard.component';
 import { CreatetaskComponent } from './modules/task/createtask/createtask.component';
 import { EdittaskComponent } from './modules/task/edittask/edittask.component';
 import { ViewtaskComponent } from './modules/task/viewtask/viewtask.component';
@@ -41,6 +40,7 @@ import { ChangePasswordComponent } from './pages/change-password/change-password
 import { ReadonlyComponent } from './modules/task/readonly/readonly.component';
 import { ForgotpasswordComponent } from './pages/forgotpassword/forgotpassword.component';
 import { ResetpasswordComponent } from './pages/resetpassword/resetpassword.component';
+import { InlineComponent } from './modules/task/inline/inline.component';
 export function tokenGetter() {
   return sessionStorage.getItem('access'); // Get token from storage
 }
@@ -54,7 +54,6 @@ export function tokenGetter() {
     EditorDashboardComponentComponent,
     UnauthorizedComponentComponent,
     TaskComponent,
-    ViewerdashboardComponent,
     CreatetaskComponent,
     EdittaskComponent,
     ViewtaskComponent,
@@ -63,6 +62,7 @@ export function tokenGetter() {
     ReadonlyComponent,
     ForgotpasswordComponent,
     ResetpasswordComponent,
+    InlineComponent,
     
   ],
   imports: [

@@ -5,9 +5,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { RoleGuard } from './guards/role.guard';
 import { CreatetaskComponent } from './modules/task/createtask/createtask.component';
 import { EdittaskComponent } from './modules/task/edittask/edittask.component';
-import { DeletettaskComponent } from './modules/task/deletettask/deletettask.component';
 import { TaskComponent } from './modules/task/task.component';
-import { ViewerdashboardComponent } from './modules/viewerdashboard/viewerdashboard.component';
 import { ViewtaskComponent } from './modules/task/viewtask/viewtask.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { ChangePasswordComponent } from './pages/change-password/change-password.component';
@@ -30,11 +28,9 @@ const routes: Routes = [
     children: [
       { path: 'create-task', component: CreatetaskComponent },
       { path: 'edit-task/:id', component: EdittaskComponent },
-      { path: 'delete-task/:id', component: DeletettaskComponent },
       { path: 'tasks/:id', component: ViewtaskComponent }
     ]
   },
-  { path: 'viewer-dashboard', component: ViewerdashboardComponent, canActivate: [RoleGuard] },
   { path: 'tasks', component: TaskComponent },
   { path: 'realony', component: ReadonlyComponent },
   { path: 'profile', component: ProfileComponent },  

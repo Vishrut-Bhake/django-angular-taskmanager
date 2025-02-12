@@ -7,15 +7,15 @@ import { Router } from '@angular/router';
   selector: 'app-createtask',
   standalone: false,
   templateUrl: './createtask.component.html',
-  styleUrls: ['./createtask.component.css']  // ✅ FIXED: Corrected `styleUrl` to `styleUrls`
+  styleUrls: ['./createtask.component.css'] 
 })
 export class CreatetaskComponent {
 
   newTask: any = {
     task_name: '',
     task_description: '',
-    task_status: 'Open',
-    task_priority: 1
+    task_status: '',
+    task_priority: ''
   };
   selectedFile: File | null = null;
   constructor(private taskService: TaskService, private snackBar: MatSnackBar, private router: Router) {}
